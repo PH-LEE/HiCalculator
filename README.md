@@ -1,18 +1,18 @@
 # Hi! Calculator
 
-你好！這是個簡易的網頁計算機，從零開始搭建的一個 React app  
-文檔記錄了搭建方法及開發所遇到的問題和解答
+你好！這是個簡易的網頁計算機，從零開始搭建的一個 React app，  
+文檔記錄了搭建方法及開發所遇到的問題和解答。
 
 ## Tech Stacks
 
-`React`, `styled-components`, `TypeScript`, `Babel`, `webpack`,  
-`Jest + testing-library/react + testing-library/jest-dom + testing-library/user-event`
+`React` , `styled-components` , `TypeScript` , `Babel` , `webpack` ,  
+ `Jest + testing-library/react + testing-library/jest-dom + testing-library/user-event`
 
 ## 環境搭建
 
 ### React:
 
-因有使用 `typescript` , 需加入 `react` & `react-dom` 型別
+因有使用 `typescript` , 需加入 `react` & `react-dom` 型別。
 
 ```
 npm install react react-dom @types/react @types/react-dom
@@ -20,19 +20,19 @@ npm install react react-dom @types/react @types/react-dom
 
 ### styled-components:
 
-`styled-components` 核心為 ES6 的 `Tagged Template Literals` 讓 style 添加到 React Element 上，無需透過 babel 或 webpack 編譯和打包（不支援 `Tagged Template Literals` 的瀏覽器當然還是須透過 babel 編譯)
+`styled-components` 核心為 ES6 的 `Tagged Template Literals` 讓 style 添加到 React Element 上，無需透過 babel 或 webpack 編譯和打包（不支援 `Tagged Template Literals` 的瀏覽器當然還是須透過 babel 編譯)。
 
 ```
 npm install --save styled-components
 ```
 
-安裝 [`babel-plugin-styled-components`] (https://styled-components.com/docs/tooling#babel-plugin)可讓 styles 檔案大小優化且方便除錯
+安裝[ `babel-plugin-styled-components` ](https://styled-components.com/docs/tooling#babel-plugin)可讓 styles 檔案大小優化且方便除錯。
 
 ```
 npm install --save-dev babel-plugin-styled-components
 ```
 
-加入 styled-components `typescript` 的型別
+加入 styled-components `typescript` 的型別。
 
 ```
 npm install --save-dev @types/styled-components
@@ -56,13 +56,13 @@ npm install --save-dev @types/styled-components
 
 ### webpack:
 
-專案開發時使用 `webpack-dev-server` 當 app 的服務器，需加入此套件
+專案開發時使用 `webpack-dev-server` 當 app 的服務器，需加入此套件。
 
 ```
 npm install -save-dev webpack webpack-cli webpack-dev-server
 ```
 
-安裝 `babel-loader` 讓 `webpack` 可透過安裝好的 `babel preset` 或 `babel plugings` 將程式碼編譯成目標的 js 語法
+安裝 `babel-loader` 讓 `webpack` 可透過安裝好的 `babel preset` 或 `babel plugings` 將程式碼編譯成目標的 js 語法。
 
 ```
 npm install --save-dev babel-loader
@@ -192,7 +192,7 @@ module.exports = function (webpackEnv) {
 
 ### Babel:
 
-安裝 `preset-env` , `preset-react` , `preset-typescript` 的目的是將 es6 之後的語法, jsx 及 typescript 語法編譯成目標的 javascript
+安裝 `preset-env` , `preset-react` , `preset-typescript` 的目的是將 es6 之後的語法， jsx 及 typescript 編譯成目標的 javascript 語法。
 
 ```
 npm install --save-dev @babel/core @babel/preset-react @babel/preset-env @babel/preset-typescript
@@ -283,22 +283,25 @@ npm install typescript
 
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
+
   "exclude": ["node_modules"],
+
   "include": ["src/*.ts", "src/*.tsx"]
 }
 ```
 
 ### jest:
 
-安裝 `babel-jest` 將 `jest` 語法轉譯成目標的 js 才能執行
+安裝 `babel-jest` 將 `jest` 轉譯成目標的 js 語法才能執行
 
 ```
 npm install --save-dev jest babel-jest
 ```
 
-安裝 `testing-library/jest-dom` , `testing-library/react` 和 `testing-library/user-event` 使 dom testing 更加方便  
-dom-testing 主要是針對使用者操作後所得到的結果進行測試，不去關注 implementation 細節的原因是實作方法會迭代，迭代後需修改測試項目進而增加額外的成本  
-還需安裝 `jest-environment-jsdom` 讓測試環境變為 web 環境才能操作 dom
+安裝 `testing-library/jest-dom` , `testing-library/react` 和 `testing-library/user-event` 使 dom testing 更加方便。  
+dom-testing 主要是針對使用者操作後所得到的結果進行測試，不去關注 implementation 的原因是實作方法會迭代，迭代後需修改測試項目而增加額外的開發成本。
+
+還需安裝 `jest-environment-jsdom` 讓測試環境變為 web 環境才能操作 dom。
 
 ```
 npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event jest-environment-jsdom
@@ -326,4 +329,4 @@ import '@testing-library/jest-dom'
 
 ### 計算機所運用的演算法:
 
-使用逆波蘭演算法(reverse polish notation)，將計算機顯示器所呈現的 `字串數值` 和 `運算符號` 推入 `stack` 加以計算並得出實際數值
+使用逆波蘭演算法(reverse polish notation)，將計算機顯示器所呈現的 `字串數值` 和 `運算符號` 推入 `stack` 加以計算並得出實際數值。
