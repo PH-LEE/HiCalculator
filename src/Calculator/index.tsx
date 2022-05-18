@@ -3,8 +3,13 @@ import styled from 'styled-components'
 import Btns from './Btns/index'
 import Display from './Display/index'
 import { DigitsArr } from './model'
-import { calculateRBN, transformToRPN } from '../utils/index'
+import { calculateRBN } from '../utils/index'
 import { btnsArray } from './model'
+
+const StyledMain = styled.main`
+  min-width: 375px;
+  margin-bottom: 40px;
+`
 
 const StyledContainer = styled.div`
   border-radius: 8px;
@@ -22,7 +27,7 @@ const StyledContainer = styled.div`
 
 const StyledLogo = styled.div`
   display: flex;
-  margin-left: 20px;
+  padding-left: 40px;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
@@ -64,7 +69,7 @@ const useCalulatorOperate = () => {
     let calLength = digitsStr.calc.length
     let lastCal = digitsStr.calc[calLength - 1]
 
-    if (lastCal && lastCal.value === 'NaN') {
+    if (lastCal && (lastCal.value === 'NaN' || lastCal.value === 'Infinity')) {
       if (!(op === btnsArray[0].op || op === btnsArray[1].op)) {
         return
       }
@@ -151,6 +156,8 @@ const useCalulatorOperate = () => {
           }
           //is .
           if (key === btnsArray[18].key && lastCal.dpflag) return
+          //if last is Exponent number cant add number
+          if (/[eE]/.test(lastCal.value)) return
           if (key === btnsArray[18].key) {
             tempArr.calc[calLength - 1].dpflag = true
           }
@@ -178,13 +185,16 @@ const useCalulatorOperate = () => {
         //ae
         let tempArr = { ...digitsStr }
         if (calLength > 0 && !!digitsStr.display) {
-          if (lastCal.iscalculator || lastCal.value === 'NaN') {
+          if (lastCal.value === 'NaN' || lastCal.value === 'Infinity') {
+            tempArr.calc.pop()
+            tempArr.display = ''
+          } else if (lastCal.iscalculator) {
             //if calculator pop calc and remove ' + ' charactor
             tempArr.calc.pop()
             tempArr.display = tempArr.display.slice(0, -3)
           } else {
-            //if not calculator and string length >1
-            if (lastCal.value.length > 1) {
+            //if not calculator and string length >1 && not exp
+            if (lastCal.value.length > 1 && !lastCal.value.includes('e')) {
               //if dpflag true and last charactor is '.'
               if (
                 lastCal.dpflag &&
@@ -195,24 +205,43 @@ const useCalulatorOperate = () => {
               tempArr.calc[calLength - 1].value = tempArr.calc[
                 calLength - 1
               ].value.slice(0, -1)
-              //if str length <= 1, pop the calc
+              tempArr.display = tempArr.display.slice(0, -1)
+              //if is exp number, pop the calc
+            } else if (lastCal.value.includes('e')) {
+              tempArr.calc.pop()
+              tempArr.display = ''
+              //str length <= 1
             } else {
               tempArr.calc.pop()
+              tempArr.display = tempArr.display.slice(0, -1)
             }
-            tempArr.display = tempArr.display.slice(0, -1)
           }
         }
         setDigitsStr(tempArr)
         break
       }
       case btnsArray[2].op: {
-        // %
-        const numberVal = calculateRBN(transformToRPN(digitsStr.calc))
+        // %)
+        if (
+          digitsStr.calc.length === 0 ||
+          (digitsStr.calc.length === 1 && digitsStr.calc[0].value === '0')
+        )
+          break
+        //if end by calculator wont cal
+        if (lastCal.iscalculator) break
+        //if end by negtive sign or decimal point wont cal
+        if (
+          !lastCal.iscalculator &&
+          (lastCal.value === '-' || lastCal.value === '.')
+        )
+          break
+
+        const numberVal = calculateRBN(digitsStr.calc)
         const divHudVal = numberVal / 100
         //let display show readable result
         let value =
-          divHudVal.toString().length >= 7
-            ? divHudVal.toExponential(7)
+          divHudVal.toString().length > 7
+            ? parseFloat(divHudVal.toExponential(7))
             : divHudVal
         let strValue = value.toString()
         setDigitsStr({
@@ -278,11 +307,22 @@ const useCalulatorOperate = () => {
         pushNumeral(btnsArray[18].key)
         break
       case btnsArray[19].op: // ans
-        const numberVal = calculateRBN(transformToRPN(digitsStr.calc))
+        // empty or single number/calculator wont cal
+        if (digitsStr.calc.length <= 1) break
+        //if end by calculator wont cal
+        if (lastCal.iscalculator) break
+        //if end by negtive sign or decimal point wont cal
+        if (
+          !lastCal.iscalculator &&
+          (lastCal.value === '-' || lastCal.value === '.')
+        )
+          break
+
+        const numberVal = calculateRBN(digitsStr.calc)
         //let display show readable result
         let value =
-          numberVal.toString().length >= 7
-            ? numberVal.toExponential(7)
+          numberVal.toString().length > 7
+            ? parseFloat(numberVal.toExponential(7))
             : numberVal
         let strValue = value.toString()
         setDigitsStr({
@@ -304,7 +344,7 @@ const useCalulatorOperate = () => {
 const Calculator = () => {
   const { onClick, digitsStr } = useCalulatorOperate()
   return (
-    <div>
+    <StyledMain>
       <StyledLogo>
         <p className='logoF'>Hi!</p>
         <p className='logoS'>Calculator</p>
@@ -315,7 +355,7 @@ const Calculator = () => {
           <Btns onClick={onClick} />
         </StyledCalculator>
       </StyledContainer>
-    </div>
+    </StyledMain>
   )
 }
 

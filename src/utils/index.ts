@@ -1,6 +1,8 @@
 import { DigitsArr } from '../Calculator/model'
 import { btnsArray } from '../Calculator/model'
 
+type numType = number | string
+
 const opConverion = {
   [btnsArray[3].key]: '/',
   [btnsArray[7].key]: '*',
@@ -17,24 +19,76 @@ const opPriority: { [key: string]: number } = {
   '+': 2,
 }
 
-function doArithmetic(s1: number, s2: number, op: '/' | '*' | '-' | '+') {
+/**
+ * transform number to accurated 15 digits precision
+ * @param num
+ * @param precision
+ * @returns
+ */
+function strip(num: numType, precision = 15): number {
+  return +parseFloat(Number(num).toPrecision(precision))
+}
+/**
+ * get digits length of a number (exponent supported)
+ * @param num
+ * @returns
+ */
+function digitLength(num: numType): number {
+  // Get digit length of e
+  const eSplit = num.toString().split(/[eE]/)
+  const len = (eSplit[0].split('.')[1] || '').length - +(eSplit[1] || 0)
+  return len > 0 ? len : 0
+}
+/**
+ * transform float to Interger(eponent supported)
+ * @param num
+ * @returns
+ */
+function float2Int(num: numType): number {
+  if (num.toString().indexOf('e') === -1) {
+    return Number(num.toString().replace('.', ''))
+  }
+  const dLen = digitLength(num)
+  return dLen > 0 ? strip(Number(num) * Math.pow(10, dLen)) : Number(num)
+}
+
+function doArithmetic(
+  s1: number,
+  s2: number,
+  op: '/' | '*' | '-' | '+'
+): number {
   switch (op) {
     case '*': {
-      return s1 * s2
+      const intS1 = float2Int(s1)
+      const intS2 = float2Int(s2)
+      const tenslength = digitLength(s1) + digitLength(s2)
+      return (intS1 * intS2) / Math.pow(10, tenslength)
     }
     case '/': {
-      return s1 / s2
+      const intS1 = float2Int(s1)
+      const intS2 = float2Int(s2)
+      return doArithmetic(
+        intS1 / intS2,
+        strip(Math.pow(10, digitLength(s2) - digitLength(s1))),
+        '*'
+      )
     }
     case '+': {
-      return s1 + s2
+      const maxDL = Math.max(digitLength(s1), digitLength(s2))
+      const transformS1 = s1 * Math.pow(10, maxDL) //interger number
+      const transformS2 = s2 * Math.pow(10, maxDL)
+      return (transformS1 + transformS2) / Math.pow(10, maxDL)
     }
     case '-': {
-      return s1 - s2
+      const maxDL = Math.max(digitLength(s1), digitLength(s2))
+      const transformS1 = s1 * Math.pow(10, maxDL) //interger number
+      const transformS2 = s2 * Math.pow(10, maxDL)
+      return (transformS1 - transformS2) / Math.pow(10, maxDL)
     }
   }
 }
 
-export function transformToRPN(digitsArr: DigitsArr['calc']) {
+function transformToRPN(digitsArr: DigitsArr['calc']) {
   if (digitsArr.length === 0) return []
   let i = 0
   let res: string[] = []
@@ -65,11 +119,12 @@ export function transformToRPN(digitsArr: DigitsArr['calc']) {
   while (stack.length > 0) {
     res.push(stack.pop() as string)
   }
-  console.log('RPNepx', res)
   return res
 }
 
-export function calculateRBN(rbn: string[]) {
+export function calculateRBN(digitsArr: DigitsArr['calc']) {
+  const rbn = transformToRPN(digitsArr)
+
   if (rbn.length === 0) return 0
   let i = 0
   let stack: number[] = []
