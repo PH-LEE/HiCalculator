@@ -94,6 +94,7 @@ const useCalulatorOperate = () => {
         return
       } else {
         //is number then push calculator
+        if (!lastCal.iscalculator && lastCal.value === '-') return
         if (!lastCal.iscalculator) {
           tempArr.calc.push({
             dpflag: false,
@@ -103,7 +104,7 @@ const useCalulatorOperate = () => {
           tempArr.display += ` ${key} `
           // * / replace other, +- replace eachother and if * / before, add - after
         } else {
-          if (key === lastCal.value) return
+          if (key === lastCal.value) return //self return
           if (
             key === btnsArray[11].key &&
             (lastCal.value === btnsArray[3].key ||
