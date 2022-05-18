@@ -2,7 +2,6 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = function (webpackEnv) {
-
   const isEnvDev = !!webpackEnv.development
   const isEnvPrd = !!webpackEnv.production
 
@@ -12,6 +11,7 @@ module.exports = function (webpackEnv) {
       new HtmlWebpackPlugin({
         inject: true,
         template: '/public/index.html',
+        publicPath: isEnvDev ? 'auto' : 'build',
       }),
     ],
     output: {
