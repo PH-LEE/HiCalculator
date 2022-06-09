@@ -3,6 +3,10 @@
 你好！這是個簡易的網頁計算機，從零開始搭建的一個 React app，  
 文檔記錄了搭建方法及開發所遇到的問題和解答。
 
+## Live example
+
+[Hi!Calculator](https://ph-lee.github.io/HiCalculator/)
+
 ## Tech Stacks
 
 `React` , `styled-components` , `TypeScript` , `Babel` , `webpack` ,  
