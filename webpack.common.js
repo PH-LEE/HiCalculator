@@ -11,7 +11,7 @@ module.exports = function (webpackEnv) {
       new HtmlWebpackPlugin({
         inject: true,
         template: '/public/index.html',
-        publicPath: isEnvDev ? 'auto' : 'build',
+        publicPath: isEnvDev ? 'auto' : 'build',  //找到要插入js檔案的位置
       }),
     ],
     output: {

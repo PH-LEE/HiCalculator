@@ -88,6 +88,7 @@ module.exports = function (webpackEnv) {
       new HtmlWebpackPlugin({
         inject: true,
         template: '/public/index.html',
+        publicPath: isEnvDev ? 'auto' : 'build', //找到要插入js檔案的位置
       }),
     ],
     output: {
@@ -163,7 +164,6 @@ module.exports = function (webpackEnv) {
 // webpack.dev.js
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = function (webpackEnv) {
   return merge(common(webpackEnv), {
@@ -177,15 +177,12 @@ module.exports = function (webpackEnv) {
 }
 
 // webpack.prod.js
+const { merge } = require('webpack-merge')
+const common = require('./webpack.common')
+
 module.exports = function (webpackEnv) {
   return merge(common(webpackEnv), {
     mode: 'production',
-    plugins: [
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: '/public/index.html',
-      }),
-    ],
   })
 }
 ```
